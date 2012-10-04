@@ -1,2 +1,4 @@
 gitview.sqlite
 *.sw?
+.idea
+nbproject

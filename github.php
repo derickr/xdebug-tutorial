@@ -14,6 +14,16 @@ class Github
 		return json_decode(file_get_contents(self::$base . $method));
 	}
 
+	function getRepos()
+	{
+		$repos = array();
+		foreach ( $this->d->query("SELECT * FROM repo" ) as $row )
+		{
+			$repos[] = $row['name'];
+		}
+		return $repos;
+	}
+
 	function getBranches( $repo )
 	{
 		$branches = array();
@@ -22,6 +32,25 @@ class Github
 			$branches[] = $row['branch'];
 		}
 		return $branches;
+	}
+
+	function getLanguages( $repo )
+	{
+		$langs = array();
+		foreach ( $this->d->query("SELECT * FROM lang WHERE repo='$repo'") as $row )
+		{
+			$langs[] = $row['lang'];
+		}
+		return $langs;
+	}
+
+	function getRepoInfo( $repo )
+	{
+		$info = array( 'branches' => array(), 'langs' => array() );
+		$info['branches'] = $this->getBranches( $repo );
+		$info['lang'] = $this->getLanguages( $repo );
+
+		return $info;
 	}
 
 	private function storeRepository( $name, $reponame, $branches, $languages )
